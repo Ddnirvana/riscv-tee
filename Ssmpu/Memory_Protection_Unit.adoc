@@ -189,13 +189,13 @@ You can refer to the Table 3.6 in riscv-privileged spec.
 
 
 === Context Switching Optimization
-With SMPU, each context switch requires the OS to store 64 address registers and 8 configuration registers (RV64), which is costly and unnecessary.
-So the SMPU is proposing an optimization to minimize the overhead caused by context switching.
+With SMPU, each context switch requires the OS to update 8 configuration registers (RV64). Implementation may want to optimize context switch performance.
+So the SMPU is proposing an *optional* optimization to minimize the overhead caused by context switching.
 
 We add two CSRs called *_smpuswitch0_* and *_smpuswitch1_*, which are XLEN-bit read/write registers, formatted as shown in Figure 7.
 For RV64, only *_smpuswitch0_* is used.
 Each bit of this register holds on/off status of the corresponding SMPU entry respectively.
-During context switch, the OS can simply store and restore smpuswitch as part of the context.
+During context switch, the OS can simply update the smpuswitch CSR to switch SMPU regions.
 An SMPU entry is activated only when both corresponding bits in smpuswitch and A field of smpuicfg are set. (i.e., smpuswitch[i] & smpu[i]cfg.A)
 
 image::MPU_domain_switch_register_format.png[title="SMPU domain switch register format (RV64)"]
